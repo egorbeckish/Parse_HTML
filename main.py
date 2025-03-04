@@ -1,4 +1,5 @@
 from utils import *
 
 
-get_homework()
+homeworks = get_homeworks('files_html')
+show_homeworks(homeworks)
