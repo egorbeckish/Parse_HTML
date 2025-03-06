@@ -1,10 +1,15 @@
-import os
-import regex
-import calendar
-import datetime
+
+try:
+    import regex
+    import calendar
+    import datetime
+    from bs4 import BeautifulSoup
+    import os
+    import pandas as pd
 
 
-os.system('python3 -m pip install --upgrade pip; pip install -r requirements.txt')
+except ImportError:
+    import os
 
 
-from bs4 import BeautifulSoup
+    os.system('python3 -m pip install --upgrade pip; pip install -r requirements.txt')
