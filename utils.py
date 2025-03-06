@@ -15,12 +15,12 @@ def __correct_data(info: str) -> tuple[str]:
 
 def __convert_to_datetime(data: list[str]) -> None:
     data[0] = datetime.datetime.strptime(data[0], '%d.%m.%Y')
+    data[1] = datetime.datetime.strptime(data[1], '%H:%M')
     data[2] = datetime.datetime.strptime(data[2], '%H:%M')
-    data[3] = datetime.datetime.strptime(data[3], '%H:%M')
-    data.insert(-1, (data[0] + datetime.timedelta(seconds=(data[3] - data[2]).seconds)).time())
+    data.insert(-1, (data[0] + datetime.timedelta(seconds=(data[2] - data[1]).seconds)).time())
     data[0] = data[0].date()
+    data[1] = data[1].time()
     data[2] = data[2].time()
-    data[3] = data[3].time()
 
 
 def get_homeworks(path: str=None) -> list[list[datetime.datetime | str]]:
@@ -35,7 +35,7 @@ def get_homeworks(path: str=None) -> list[list[datetime.datetime | str]]:
             check = data.find('div', class_='n-tag __tag-j9opmv-ss n-tag--strong n-tag--round').find('span', class_='n-tag__content').text
             accept_date, accept_time = __correct_data(accept)
             check_date, check_time = __correct_data(check)
-            data = [accept_date, 'ДЗ', accept_time, check_time, data.get('href')]
+            data = [accept_date, accept_time, check_time, data.get('href')]
             __convert_to_datetime(data)
             if data not in homeworks:
                 homeworks += [data]
@@ -54,9 +54,12 @@ def show_homeworks(homeworks: list[list[str]], month: str=None) -> None:
 
 
 def create_df(homeworks: list[list[datetime.datetime | str]]) -> None:
-    print(
-        pd.DataFrame(
+    df = pd.DataFrame(
             data=homeworks,
-            columns=['Дата', 'Тип', 'Приняли', 'Проверили', 'Разница', 'Ссылка']
+            columns=['Дата', 'Приняли', 'Проверили', 'Разница', 'Ссылка'],
         )
-    )
+
+    # date_cols = ['Дата', 'Приняли', 'Проверили', 'Разница']
+    # df[date_cols].astype('datetime64[ns]')
+
+    return df
